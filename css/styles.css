@@ -115,17 +115,18 @@ header {
 .nav-menu-wrap {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex: 1;
     position: relative;
+    padding-right: 160px;
 }
 .list-bar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 6px 18px;
     list-style: none;
-    margin: 0 auto;
+    margin: 0;
     padding: 0;
     flex-wrap: wrap;
 }
@@ -1266,7 +1267,7 @@ padding: 0 0 20px 0;
   font-weight: bold;
   font-size: 0.95em;
 }
-}
+
 
 .login-modal-content h2 {
   font-size: clamp(1.4rem, 4vw, 1.8rem);
