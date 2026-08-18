@@ -23,7 +23,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(7, 40, 133);
+    background: red; /*rgba(7, 40, 133);*/
     gap: 8px 20px;
     padding: 10px clamp(16px, 4vw, 48px);
     box-sizing: border-box;
