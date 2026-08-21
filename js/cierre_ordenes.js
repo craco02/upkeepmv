@@ -40,7 +40,7 @@ function crearSelectConBusqueda(selectId) {
       let data = await res.json();
 
       // Excluir los progresos que no deben mostrarse y ordenar descendente por id
-      const excluidos = ['Completado', 'Extemporaneo', 'Reprogramado', 'De baja'];
+      const excluidos = ['Completado', 'De baja'];
       datos = data
         .filter(row => row.progreso && !excluidos.includes(row.progreso))
         .sort((a, b) => b.id - a.id)
