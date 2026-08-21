@@ -32,18 +32,46 @@
         <h2 id="codigos-title">Código de Máquinas</h2>
         <input type="text" id="codigos-search" placeholder="Buscar...">
         
-        <table id="codigos-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Descripción</th>
-            </tr>
-          </thead>
-          <tbody id="codigos-body">
-            <!-- Filas dinámicas -->
-          </tbody>
-        </table>
+        <div id="codigos-table-wrap">
+          <table id="codigos-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody id="codigos-body">
+              <!-- Filas dinámicas -->
+            </tbody>
+          </table>
+        </div>
 
+        <section id="codigos-solicitudes" aria-labelledby="codigos-solicitudes-title">
+          <h2 id="codigos-solicitudes-title">Sistema de registro de solicitudes de mantenimiento de respaldo</h2>
+          <div class="codigos-form-container">
+            <a class="codigos-form-card" href="./formulario-simple.html?src=https://forms.office.com/Pages/ResponsePage.aspx?id=NZva7YvtyUWWTKbrPuRyG1OEneEhG35AiBW0QyXPVf9UNlM3REw3WE5OV1dCWTUyRklCSlJTTEtCTi4u">
+              <span class="codigos-form-icon" aria-hidden="true">📝</span>
+              <span>Crear solicitud</span>
+            </a>
+
+            <a class="codigos-form-card" href="./formulario-simple.html?src=https://forms.office.com/Pages/ResponsePage.aspx?id=NZva7YvtyUWWTKbrPuRyG1OEneEhG35AiBW0QyXPVf9UNUlWRFpEVExGWkkxWTVPWEhKRU5NWTJGOC4u">
+              <span class="codigos-form-icon" aria-hidden="true">👷‍♂️</span>
+              <span>Asignar técnicos</span>
+            </a>
+
+            <a class="codigos-form-card" href="./formulario-simple.html?src=https://forms.office.com/Pages/ResponsePage.aspx?id=NZva7YvtyUWWTKbrPuRyG1OEneEhG35AiBW0QyXPVf9UNDBKU1MyTklWR0oyNEtNVzVUVEVaOUVRNC4u">
+              <span class="codigos-form-icon" aria-hidden="true">✅</span>
+              <span>Cerrar solicitudes</span>
+            </a>
+
+            <a class="codigos-form-card" href="./formulario-simple.html?src=https://forms.office.com/Pages/ResponsePage.aspx?id=NZva7YvtyUWWTKbrPuRyG1OEneEhG35AiBW0QyXPVf9URUZKSDBWUklVTjJaWVo2SUFYVE5PS0M0OC4u">
+              <span class="codigos-form-icon" aria-hidden="true">💻</span>
+              <span>Modificar solicitud</span>
+            </a>
+          </div>
+        </section>
+
+        <script src="../data/codigos-data.js"></script>
         <script src="../js/codigos.js"></script>
   </body>
 </html>
