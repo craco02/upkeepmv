@@ -174,7 +174,7 @@ crearSelectConBusqueda(selectMaquina);
     if (localStorage.getItem('role') !== 'editor') return alert('Debe iniciar sesión como editor.');
     const machine = document.getElementById('maquinaEquipo') || document.getElementById('maquina');
     const id = document.getElementById('ordenId')?.value;
-    const sectorNames = ['', 'Mantenimiento', 'Maquinado', 'Armado', 'Accesorios', 'Herrería', 'Pintura', 'Logística', 'Galvamax', 'Administración'];
+    const sectorNames = ['', 'Mantenimiento', 'Maquinado', 'Armado', 'Accesorios', 'Herrería', 'Pintura', 'Logística', 'Galvamax', 'Administración', 'Obras'];
     const categoryNames = ['', 'Correctivo', 'Preventivo', 'Predictivo'];
     const payload = { codigo: machine.dataset.codigo || machine.value, maquina_equipo: machine.dataset.descripcion, nombre_declarado: declarado.value, averia: averia.value, solicitado: solicitante.value, sector: sectorNames[Number(sector.value)], categoria: categoryNames[Number(categoria.value)] };
     if (!payload.codigo || !payload.maquina_equipo) return alert('Seleccione una maquina desde la lista de resultados.');
