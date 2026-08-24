@@ -162,6 +162,12 @@ function recalcularTotal() {
 document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('submit', async (e) => {
   e.preventDefault();
   recalcularTotal();
+  const submitButton = e.target.querySelector('button[type="submit"]');
+  if (submitButton?.disabled) return;
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Cerrando...';
+  }
 
   // Calcular costo_mo basado en salarios
   try {
@@ -169,6 +175,10 @@ document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('s
   } catch (error) {
     console.error('Error calculando unidad_mo:', error);
     alert('Error al calcular unidad de MO');
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Cerrar solicitud';
+    }
     return;
   }
 
@@ -185,7 +195,10 @@ document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('s
   try {
     const response = await API_FETCH('/api/ordenes/cierre', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+      },
       body: JSON.stringify(payload)
     });
 
@@ -200,7 +213,7 @@ document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('s
     }
 
     if (!response.ok) {
-      const errorMsg = data.error || 'No se pudo cerrar la orden';
+      const errorMsg = data.detalle || data.error || 'No se pudo cerrar la orden';
       alert('Error: ' + errorMsg);
       return;
     }
@@ -210,6 +223,11 @@ document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('s
   } catch (error) {
     console.error('Error al cerrar orden:', error);
     alert('Error al cerrar la orden: ' + error.message);
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Cerrar solicitud';
+    }
   }
 });
 
