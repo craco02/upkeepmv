@@ -72,10 +72,19 @@ function crearSelectConBusqueda(selectId) {
     }
   }
 
+  function etiquetaSolicitud(item) {
+    const datosSolicitud = [
+      item.maquina_equipo,
+      item.nombre_declarado
+    ].filter(Boolean);
+    return datosSolicitud.join(' - ') || 'Sin nombre';
+  }
+
   function seleccionar(item) {
     select.innerHTML = "";
-    select.add(new Option(item.maquina_equipo || item.nombre_declarado || "Sin nombre", String(item.id), true, true));
-    input.value = item.maquina_equipo || item.nombre_declarado || "Sin nombre";
+    const etiqueta = etiquetaSolicitud(item);
+    select.add(new Option(etiqueta, String(item.id), true, true));
+    input.value = etiqueta;
 
     const hiddenId = document.getElementById('ordenId');
     if (hiddenId) {
@@ -101,7 +110,8 @@ function crearSelectConBusqueda(selectId) {
 
       resultadosActuales = datos.filter(item =>
         (item.maquina_equipo || "").toLowerCase().includes(busqueda.toLowerCase()) ||
-        (item.nombre_declarado || "").toLowerCase().includes(busqueda.toLowerCase())
+        (item.nombre_declarado || "").toLowerCase().includes(busqueda.toLowerCase()) ||
+        String(item.id).includes(busqueda.trim())
       ).slice(0, 60);
 
       lista.innerHTML = '';
@@ -123,7 +133,7 @@ function crearSelectConBusqueda(selectId) {
         opcion.className = 'select-buscador-opcion';
         opcion.setAttribute('role', 'option');
         opcion.tabIndex = -1;
-        descripcion.textContent = item.maquina_equipo || item.nombre_declarado || "Sin nombre";
+        descripcion.textContent = etiquetaSolicitud(item);
         codigo.textContent = `ID: ${item.id}`;
         opcion.appendChild(descripcion);
         opcion.appendChild(codigo);
