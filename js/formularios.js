@@ -62,7 +62,7 @@
     }
     if (action.endsWith('/asignacion')) {
       const selects = form.querySelectorAll('select');
-      return { id: selects[0].value, responsable: selectedText(selects[1]), apoyo: selectedText(selects[2]) };
+      return { id: selects[0].value, responsable: selects[1].value || null, apoyo: selects[2].value || null };
     }
     return requestPayload();
   }
@@ -72,6 +72,7 @@
     if (localStorage.getItem('role') !== 'editor' || !token()) return alert('Debe iniciar sesion como editor.');
     const data = payload();
     if (!data) return;
+    if (action.endsWith('/asignacion') && !data.responsable) return alert('Seleccione un técnico responsable.');
     if ((action.endsWith('/ordenes') && (!data.codigo || !data.maquina_equipo)) || (!action.endsWith('/ordenes') && !data.id)) return alert('Seleccione primero una opcion de la lista.');
     try {
       const response = await API_FETCH(action, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` }, body: JSON.stringify(data) });
