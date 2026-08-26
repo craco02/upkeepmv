@@ -158,6 +158,32 @@ function recalcularTotal() {
   document.getElementById('costo_repuestos').value = costoTotal.toFixed(2);
 }
 
+function construirNotas() {
+  const repuestos = [];
+
+  document.querySelectorAll('#tablaBody tr').forEach(fila => {
+    const valorProducto = fila.querySelector('td:nth-child(1) input')?.value.trim() || '';
+    const cantidad = fila.querySelector('td:nth-child(2) input')?.value.trim() || '';
+    const producto = productos.find(item => `${item.codigo} - ${item.descripcion}` === valorProducto);
+
+    if (producto && cantidad) {
+      repuestos.push(`Código: ${producto.codigo} | Nombre: ${producto.descripcion} | Cantidad: ${cantidad}`);
+    }
+  });
+
+  const observacion = document.getElementById('observacion')?.value.trim() || '';
+  const partes = [];
+
+  if (repuestos.length > 0) {
+    partes.push(`Repuestos:\n${repuestos.map(item => `- ${item}`).join('\n')}`);
+  }
+  if (observacion) {
+    partes.push(`Observación:\n${observacion}`);
+  }
+
+  return partes.join('\n\n');
+}
+
 // Cuando se envía el formulario principal
 document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -185,6 +211,7 @@ document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('s
   // Enviar formulario por AJAX
   const formData = new FormData(e.target);
   const payload = Object.fromEntries(formData);
+  payload.notas = construirNotas();
   const selectApoyo = document.getElementById('apoyo');
 
   // El item se usa para calcular el salario; en la orden se guarda el nombre visible.
