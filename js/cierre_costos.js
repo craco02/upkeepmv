@@ -167,7 +167,7 @@ function construirNotas() {
     const producto = productos.find(item => `${item.codigo} - ${item.descripcion}` === valorProducto);
 
     if (producto && cantidad) {
-      repuestos.push(`Código: ${producto.codigo} | Nombre: ${producto.descripcion} | Cantidad: ${cantidad}`);
+      repuestos.push(`${producto.codigo} | ${producto.descripcion} | ${cantidad}`);
     }
   });
 
