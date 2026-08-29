@@ -25,10 +25,35 @@ async function cargarOrdenes() {
   }
 }
 
+function parseFechaSinZona(value) {
+  if (!value && value !== 0) return null;
+
+  const texto = String(value).trim();
+  if (!texto) return null;
+
+  const textoSinZona = texto
+    .replace(/Z$/i, '')
+    .replace(/([+-]\d{2}):?(\d{2})$/, '')
+    .replace('T', ' ');
+
+  const fecha = new Date(textoSinZona);
+  if (!Number.isNaN(fecha.getTime())) return fecha;
+
+  const coincidencia = texto.match(/^\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}(?::\d{2})?(?:\.\d{1,3})?$/);
+  if (coincidencia) {
+    const [fechaHora] = coincidencia;
+    const [fechaString, horaString] = fechaHora.includes('T') ? fechaHora.split('T') : fechaHora.split(' ');
+    const [ano, mes, dia] = fechaString.split('-').map(Number);
+    const [hora, minuto, segundo = '00'] = horaString.split(':').map((parte, indice) => indice === 2 ? Number(parte || '0') : Number(parte));
+    return new Date(ano, mes - 1, dia, hora, minuto, segundo, 0);
+  }
+
+  return null;
+}
+
 function formatFecha(value) {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
+  const date = parseFechaSinZona(value);
+  if (!date) return String(value || '');
   const pad = n => String(n).padStart(2, '0');
   const dia = pad(date.getDate());
   const mes = pad(date.getMonth() + 1);
@@ -55,9 +80,9 @@ function claseEstadoFila(row) {
   }
 
   if (progreso === "no iniciado") {
-    const vencimiento = new Date(row.fecha_vencimiento);
+    const vencimiento = parseFechaSinZona(row.fecha_vencimiento);
     const ahora = new Date();
-    return !Number.isNaN(vencimiento.getTime()) && vencimiento < ahora
+    return vencimiento && vencimiento < ahora
       ? "estado-vencido"
       : "estado-pendiente";
   }
