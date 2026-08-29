@@ -33,8 +33,40 @@ function formatFecha(value) {
 
   const match = texto.match(/^\s*(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?\s*$/i);
   if (match) {
-    const [, año, mes, dia, hora, minutos, segundos] = match;
-    return `${dia}/${mes}/${año} ${hora}:${minutos}${segundos ? `:${segundos}` : ''}`;
+    let [, año, mes, dia, hora, minutos, segundos] = match;
+    
+    // Convertir a números y ajustar por 4 horas de diferencia
+    hora = parseInt(hora, 10);
+    minutos = parseInt(minutos, 10);
+    segundos = segundos ? parseInt(segundos, 10) : 0;
+    dia = parseInt(dia, 10);
+    mes = parseInt(mes, 10);
+    año = parseInt(año, 10);
+    
+    // Restar 4 horas
+    hora -= 4;
+    if (hora < 0) {
+      hora += 24;
+      dia -= 1;
+      if (dia < 1) {
+        mes -= 1;
+        if (mes < 1) {
+          mes = 12;
+          año -= 1;
+        }
+        // Días del mes (simplificado, sin considerar bisiestos)
+        const diasMes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        dia = diasMes[mes - 1];
+      }
+    }
+    
+    const diaStr = String(dia).padStart(2, '0');
+    const mesStr = String(mes).padStart(2, '0');
+    const horaStr = String(hora).padStart(2, '0');
+    const minutosStr = String(minutos).padStart(2, '0');
+    const segundosStr = String(segundos).padStart(2, '0');
+    
+    return `${diaStr}/${mesStr}/${año} ${horaStr}:${minutosStr}${segundos ? `:${segundosStr}` : ''}`;
   }
 
   return texto;
@@ -57,7 +89,11 @@ function claseEstadoFila(row) {
   }
 
   if (progreso === "no iniciado") {
-    const vencimiento = row.fecha_vencimiento ? new Date(String(row.fecha_vencimiento).replace(' ', 'T')) : null;
+    const vencimiento = row.fecha_vencimiento ? new Date(String(row.fecha_vencimiento).replace(' ', 'T').replace(/-/g, '-')) : null;
+    if (vencimiento) {
+      // Restar 4 horas (14400000 ms) para ajustar la zona horaria
+      vencimiento.setTime(vencimiento.getTime() - 4 * 60 * 60 * 1000);
+    }
     const ahora = new Date();
     return vencimiento && !Number.isNaN(vencimiento.getTime()) && vencimiento < ahora
       ? "estado-vencido"
