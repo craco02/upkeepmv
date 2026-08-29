@@ -25,42 +25,19 @@ async function cargarOrdenes() {
   }
 }
 
-function parseFechaSinZona(value) {
-  if (!value && value !== 0) return null;
+function formatFecha(value) {
+  if (!value && value !== 0) return '';
 
   const texto = String(value).trim();
-  if (!texto) return null;
+  if (!texto) return '';
 
-  const textoSinZona = texto
-    .replace(/Z$/i, '')
-    .replace(/([+-]\d{2}):?(\d{2})$/, '')
-    .replace('T', ' ');
-
-  const fecha = new Date(textoSinZona);
-  if (!Number.isNaN(fecha.getTime())) return fecha;
-
-  const coincidencia = texto.match(/^\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}(?::\d{2})?(?:\.\d{1,3})?$/);
-  if (coincidencia) {
-    const [fechaHora] = coincidencia;
-    const [fechaString, horaString] = fechaHora.includes('T') ? fechaHora.split('T') : fechaHora.split(' ');
-    const [ano, mes, dia] = fechaString.split('-').map(Number);
-    const [hora, minuto, segundo = '00'] = horaString.split(':').map((parte, indice) => indice === 2 ? Number(parte || '0') : Number(parte));
-    return new Date(ano, mes - 1, dia, hora, minuto, segundo, 0);
+  const match = texto.match(/^\s*(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?\s*$/i);
+  if (match) {
+    const [, año, mes, dia, hora, minutos, segundos] = match;
+    return `${dia}/${mes}/${año} ${hora}:${minutos}${segundos ? `:${segundos}` : ''}`;
   }
 
-  return null;
-}
-
-function formatFecha(value) {
-  const date = parseFechaSinZona(value);
-  if (!date) return String(value || '');
-  const pad = n => String(n).padStart(2, '0');
-  const dia = pad(date.getDate());
-  const mes = pad(date.getMonth() + 1);
-  const año = date.getFullYear();
-  const hora = pad(date.getHours());
-  const minutos = pad(date.getMinutes());
-  return `${dia}/${mes}/${año} ${hora}:${minutos}`;
+  return texto;
 }
 
 function normalizarTexto(value) {
@@ -80,9 +57,9 @@ function claseEstadoFila(row) {
   }
 
   if (progreso === "no iniciado") {
-    const vencimiento = parseFechaSinZona(row.fecha_vencimiento);
+    const vencimiento = row.fecha_vencimiento ? new Date(String(row.fecha_vencimiento).replace(' ', 'T')) : null;
     const ahora = new Date();
-    return vencimiento && vencimiento < ahora
+    return vencimiento && !Number.isNaN(vencimiento.getTime()) && vencimiento < ahora
       ? "estado-vencido"
       : "estado-pendiente";
   }
