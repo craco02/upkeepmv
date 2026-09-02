@@ -56,19 +56,18 @@
         <!--<hr>-->
 
             <main class="solicitud">
-                <div class="titulo"><h2>Asignación de Solicitud de Mantenimiento</h2></div>
-                <form action="/api/ordenes/asignacion" method="post">
-                    <!-- Select con buscador (mÃ¡quina/equipo) -->
+                <div class="titulo"><h2>Asignación de Mantenimiento Preventivo</h2></div>
+                <form id="formAsignarMPP" action="/api/mantenimientos-preventivos/asignacion" method="post">
                     <div>
-                        <label for="maquina">Solicitud/Maquina</label>
-                        <select id="maquina" name="componente"></select>
+                        <label for="maquina">Mantenimiento</label>
+                        <select id="maquina" name="id" required></select>
                     </div>
                     <!-- Párrafo dinámico para mostrar la avería -->
                     <p id="info-averia" class="info-averia"></p>
 
                     <div>
                         <label for="responsable">Responsable</label>
-                        <select id="responsable" name="responsable">
+                        <select id="responsable" name="responsable" required>
                         <option value="">Asignar técnico</option>   
                         <option value="Santiago Rodríguez">Santiago Rodríguez</option>
                         <option value="Mauricio Patiño">Mauricio Patiño</option>
@@ -87,7 +86,7 @@
                     <!-- Campo de texto (Apoyo) -->
                     <div>
                         <label for="apoyo">Apoyo</label>
-                        <select id="apoyo" name="apoyo">
+                        <select id="apoyo" name="apoyos">
                         <option value="">Sin apoyo</option>   
                         <option value="Santiago Rodríguez">Santiago Rodríguez</option>
                         <option value="Mauricio Patiño">Mauricio Patiño</option>
@@ -107,8 +106,47 @@
                     <button type="submit">Asignar Técnico</button>
                 </form>
 
-                <!-- Buscador propio para el select de máquina -->
-                <script src="../js/cierre_ordenes.js"></script><script src="../js/formularios.js"></script>
+                <script src="../js/mpp-alert.js"></script>
+                <script src="../js/mantenimientos-preventivos-select.js"></script>
+                <script>
+                  document.addEventListener('DOMContentLoaded', () => {
+                    const form = document.getElementById('formAsignarMPP');
+                    if (!form) return;
+                    form.addEventListener('submit', async (event) => {
+                      event.preventDefault();
+                      const payload = {
+                        id: document.getElementById('maquina')?.value,
+                        responsable: document.getElementById('responsable')?.value || '',
+                        apoyos: document.getElementById('apoyo')?.value || ''
+                      };
+
+                      try {
+                        const response = await API_FETCH('/api/mantenimientos-preventivos/asignacion', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(payload)
+                        });
+                        const data = await response.json().catch(() => ({}));
+                        if (!response.ok) throw new Error(data.error || data.detalle || 'No se pudo asignar');
+                        window.mostrarMensajeMPP?.({
+                          titulo: 'Asignación exitosa',
+                          texto: 'El mantenimiento preventivo fue asignado correctamente.',
+                          redirigir: true,
+                          destino: './vista_mpp.html'
+                        });
+                        form.reset();
+                      } catch (error) {
+                        console.error(error);
+                        window.mostrarMensajeMPP?.({
+                          titulo: 'Error',
+                          texto: error.message || 'Error al asignar el mantenimiento',
+                          redirigir: true,
+                          destino: './vista_mpp.html'
+                        });
+                      }
+                    });
+                  });
+                </script>
 
             </main>
     </body>

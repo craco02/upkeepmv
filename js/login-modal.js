@@ -10,7 +10,7 @@ function closeLoginModal() {
 }
 const fetchOriginal = window.fetch.bind(window);
 window.fetch = (url, options = {}) => {
-  const normalizedUrl = typeof url === 'string' ? API_URL(url) : url;
+  const normalizedUrl = typeof url === 'string' && url.startsWith('/api/') ? API_URL(url) : url;
   const urlString = typeof normalizedUrl === 'string' ? normalizedUrl : String(normalizedUrl.url || '');
   if (urlString.includes('/api/')) {
     const token = localStorage.getItem('token');

@@ -57,39 +57,16 @@
 
             <main class="solicitud">
                 <div class="titulo"><h2>Cierre de Solicitud de Mantenimiento</h2></div>
-                <form action="/api/ordenes/cierre" method="post">
-                    <!-- Select con buscador (mÃ¡quina/equipo) -->
+                <form id="formCierreMPP" action="/api/mantenimientos-preventivos/cierre" method="post">
                     <div>
-                        <label for="maquina">Solicitud/Maquina</label>
+                        <label for="maquina">Mantenimiento</label>
                         <select id="maquina" name="id" required></select>
                     </div>
-                    <!-- Párrafo dinámico para mostrar la avería -->
-                    <p id="info-averia" class="info-averia"></p>
-                    <!-- Campo de texto (Apoyo) -->
-                    <div>
-                        <label for="apoyo">Apoyo</label>
-                        <select id="apoyo" name="apoyo">
-                        <option value="">Sin apoyo</option>   
-                        <option value="5">Santiago Rodríguez</option>
-                        <option value="6">Mauricio Patiño</option>
-                        <option value="8">Ángel Lezcano</option>
-                        <option value="9">Adriano Verón</option>
-                        <option value="10">Aldo Ibarrola</option>
-                        <option value="3">Blas Giménez</option>
-                        <option value="2">Cristhian Redes</option>
-                        <option value="1">Gustavo González</option>
-                        <option value="4">Edgar Ledezma</option>
-                        <option value="11">Cristino Mora</option>
-                        <option value="12">Ronaldo Cáceres</option>
-                        <option value="13">Alvaro Lovera</option>
-                        </select>
+                     <div>
+                        <label for="fecha_inicio">Seleccione la fecha de inicio de trabajos:</label>
+                        <input type="date" id="fecha_inicio" name="ejecucion_inicio" required style="width: 100%; max-width: 240px; padding: 0.7rem 0.9rem; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; background: #fff;">
                     </div>
-                    <!-- Area de texto (descripcion de la reparación) -->
-                    <div class="campo-ancho">
-                        <label for="reparación">Reparación Realizada</label>
-                        <textarea id="reparación" name="reparacion" rows="5" placeholder="Describa la intervencion realizada o la reparación realizada" required></textarea>
-                    </div>
-
+                    
                     <!-- Tabla de Costeo de Repuestos -->
                     <div class="campo-ancho">
                         <label for="tablaCostos">Costeo de Repuestos</label>
@@ -112,6 +89,7 @@
                         </div>
                         <input type="hidden" id="unidad_mo" name="unidad_mo" value="0">
                         <input type="hidden" id="costo_repuestos" name="costo_repuestos" value="0">
+                        <input type="hidden" id="costo_mano_obra" name="costo_mano_obra" value="0">
                     </div>
 
                     <!-- datalist global -->
@@ -122,29 +100,18 @@
                         <label for="horas">Horas empleadas en la reparación</label>
                         <input type="number" name="horas" id="horas" max="300" min="1" step="1" inputmode="numeric" placeholder="Ej: 8" required>
                     </div>
-                     <!-- Select normal (Tipo/Clasificación) -->
-                    <div>
-                        <label for="tipo">Tipo</label>
-                        <select id="tipo" name="clasificacion" required>
-                        <option value="Electromecanico">Electromecanico</option>
-                        <option value="Electrico">Electrico</option>
-                        <option value="Mecanico">Mecanico</option>
-                        <option value="Hidraulico/Neumatico">Hidraulico/Neumatico</option>
-                        <option value="Eletronico">Eletronico</option>
-                        <option value="Otros">Otros</option>
-                        </select>
-                    </div>
+                    
                     <div class="campo-ancho">
                         <label for="observavcion">Observaciones</label>
                         <textarea id="observacion" name="notas" rows="5" placeholder="Deje aca las observacions que desee acotar"></textarea>
                     </div>
-                    <button type="submit">Cerrar solicitud</button>
+                    <button type="submit">Cerrar Mantenimiento Preventivo</button>
                 </form>
 
-                <!-- Buscador propio para el select de máquina -->
-                <script src="../js/cierre_ordenes.js"></script>
+                <script src="../js/mpp-alert.js"></script>
+                <script src="../js/mantenimientos-preventivos-select.js"></script>
                 <script src="../js/cierre_costos.js"></script>
-                <script src="../js/formularios.js"></script>
+                <script src="../js/mantenimiento-preventivo-formularios.js"></script>
 
             </main>
     </body>

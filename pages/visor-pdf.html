@@ -19,6 +19,7 @@
                     <ul class="list-bar">
                         <li><a href="../index.html">Inicio</a></li>
                         <li><a href="../index.html#solicitudes">Solicitudes</a></li>
+                        <li><a href="../index.html#mpp">MPP</a></li>
                         <li><a href="../index.html#informaciones">Informaciones</a></li>
                         <li><a href="../index.html#form-adds">Formularios</a></li>
                         <li><a href="../index.html#otros">Otros</a></li>
@@ -60,9 +61,9 @@
                 <h2>Visor de documentos técnicos</h2>
             </div>
             <div class="container-select">
-                <label for="documentos">Archivo seleccionado:</label>
+                <label for="listaDocs">Archivo seleccionado:</label>
                 <!-- Select dinámico -->
-                <select class="pg-select" id="listaDocs" onchange="mostrarPDF()">
+                <select class="pg-select" id="listaDocs" onchange="mostrarPDF()" aria-label="Archivo seleccionado">
                     <option value="">-- Elegir documento --</option>
                 </select>
             </div>
@@ -70,13 +71,14 @@
             <div class="pg-iframe">
                 <!-- Iframe para mostrar PDF -->
                 <iframe id="visor"
+                title="Visor de documento técnico"
                 width="1080"
                 height="800">
                 </iframe>
                 
                 <div id="fallback">
                     <p>
-                    <a id="fallback-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+                    <a id="fallback-link" href="#" target="_blank" rel="noopener noreferrer" title="Abrir documento PDF" aria-label="Abrir documento PDF">Abrir documento PDF</a>
                     </p>
                 </div>
 

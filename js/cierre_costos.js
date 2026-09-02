@@ -185,78 +185,87 @@ function construirNotas() {
 }
 
 // Cuando se envía el formulario principal
-document.querySelector('form[action="/api/ordenes/cierre"]').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  recalcularTotal();
-  const submitButton = e.target.querySelector('button[type="submit"]');
-  if (submitButton?.disabled) return;
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = 'Cerrando...';
-  }
+const formularioCierre = document.querySelector('form[action="/api/mantenimientos-preventivos/cierre"], form[action="/api/ordenes/cierre"]');
+if (formularioCierre) {
+  const action = (formularioCierre.getAttribute('action') || '').trim();
 
-  // Calcular costo_mo basado en salarios
-  try {
-    await calcularUnidadMO();
-  } catch (error) {
-    console.error('Error calculando unidad_mo:', error);
-    alert('Error al calcular unidad de MO');
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Cerrar solicitud';
-    }
-    return;
-  }
+  // MPP usa su propio flujo de cierre y no debe recalcular unidad de MO ni enviar el cálculo genérico.
+  if (!action.includes('/mantenimientos-preventivos/cierre')) {
+    formularioCierre.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      recalcularTotal();
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      if (submitButton?.disabled) return;
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Cerrando...';
+      }
 
-  // Enviar formulario por AJAX
-  const formData = new FormData(e.target);
-  const payload = Object.fromEntries(formData);
-  payload.notas = construirNotas();
-  const selectApoyo = document.getElementById('apoyo');
+      // Calcular costo_mo basado en salarios
+      try {
+        await calcularUnidadMO();
+      } catch (error) {
+        console.error('Error calculando unidad_mo:', error);
+      window.alert('Error al calcular unidad de MO');
+        return;
+      }
 
-  // El item se usa para calcular el salario; en la orden se guarda el nombre visible.
-  payload.apoyo = selectApoyo.value
-    ? selectApoyo.selectedOptions[0].text.trim()
-    : '';
+      // Enviar formulario por AJAX
+      const formData = new FormData(e.target);
+      const payload = Object.fromEntries(formData);
+      payload.notas = construirNotas();
+      const selectApoyo = document.getElementById('apoyo');
 
-  try {
-    const response = await API_FETCH('/api/ordenes/cierre', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
-      },
-      body: JSON.stringify(payload)
+      // El item se usa para calcular el salario; en la orden se guarda el nombre visible.
+      payload.apoyo = selectApoyo?.value
+        ? selectApoyo.selectedOptions[0].text.trim()
+        : '';
+
+      const endpoint = action || '/api/ordenes/cierre';
+
+      try {
+        const response = await API_FETCH(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const responseText = await response.text();
+        let data = {};
+        
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error('Error al parsear JSON:', e);
+        }
+
+        if (!response.ok) {
+          const errorMsg = data.detalle || data.error || 'No se pudo cerrar la orden';
+          alert('Error: ' + errorMsg);
+          return;
+        }
+
+        alert('Orden cerrada exitosamente');
+        if (endpoint.includes('/mantenimientos-preventivos/')) {
+          window.location.reload();
+        } else {
+          window.location.href = '../pages/lista_solicitudes.html';
+        }
+      } catch (error) {
+        console.error('Error al cerrar orden:', error);
+        alert('Error al cerrar la orden: ' + error.message);
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Cerrar solicitud';
+        }
+      }
     });
-
-    // Leer el body una sola vez
-    const responseText = await response.text();
-    let data = {};
-    
-    try {
-      data = JSON.parse(responseText);
-    } catch (e) {
-      console.error('Error al parsear JSON:', e);
-    }
-
-    if (!response.ok) {
-      const errorMsg = data.detalle || data.error || 'No se pudo cerrar la orden';
-      alert('Error: ' + errorMsg);
-      return;
-    }
-
-    alert('Orden cerrada exitosamente');
-    window.location.href = '../pages/lista_solicitudes.html';
-  } catch (error) {
-    console.error('Error al cerrar orden:', error);
-    alert('Error al cerrar la orden: ' + error.message);
-  } finally {
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Cerrar solicitud';
-    }
   }
-});
+}
 
 // Obtener usuario logueado del localStorage
 function getUsernameFromLocalStorage() {
@@ -304,4 +313,8 @@ async function calcularUnidadMO() {
 }
 
 // Inicializar
-cargarProductos();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', cargarProductos);
+} else {
+  cargarProductos();
+}

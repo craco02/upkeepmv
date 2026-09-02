@@ -165,30 +165,3 @@ const selectMaquina = document.getElementById('maquinaEquipo') ? 'maquinaEquipo'
 crearSelectConBusqueda(selectMaquina);
 
 
-// Conexión de los formularios existentes: no cambia su HTML ni estilos.
-(function () {
-  const form = document.querySelector('main form');
-  if (!form || !/solicitud\.php|modificar\.php/.test(form.action)) return;
-  form.addEventListener('submit', async event => {
-    event.preventDefault();
-    if (localStorage.getItem('role') !== 'editor') return alert('Debe iniciar sesión como editor.');
-    const machine = document.getElementById('maquinaEquipo') || document.getElementById('maquina');
-    const id = document.getElementById('ordenId')?.value;
-    const sectorNames = ['', 'Mantenimiento', 'Maquinado', 'Armado', 'Accesorios', 'Herrería', 'Pintura', 'Logística', 'Galvamax', 'Administración', 'Obras'];
-    const categoryNames = ['', 'Correctivo', 'Preventivo', 'Predictivo'];
-    const payload = { codigo: machine.dataset.codigo || machine.value, maquina_equipo: machine.dataset.descripcion, nombre_declarado: declarado.value, averia: averia.value, solicitado: solicitante.value, sector: sectorNames[Number(sector.value)], categoria: categoryNames[Number(categoria.value)] };
-    if (!payload.codigo || !payload.maquina_equipo) return alert('Seleccione una maquina desde la lista de resultados.');
-    try {
-      const response = await API_FETCH(`/api/ordenes${id ? `/${id}/solicitud` : ''}`, { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` }, body: JSON.stringify(payload) });
-      const data = await response.json(); if (!response.ok) throw new Error(data.detalle ? `${data.error}: ${data.detalle}` : data.error); alert(data.message || 'Guardado correctamente.');
-      form.reset();
-      if (window.location.pathname.includes('lista_solicitudes.html')) {
-        window.location.reload();
-      } else {
-        window.location.href = 'lista_solicitudes.html';
-      }
-    } catch (error) { alert(error.message || 'No se pudo guardar la solicitud.'); }
-  });
-})();
-
-

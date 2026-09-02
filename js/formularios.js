@@ -3,6 +3,8 @@
   const action = form?.getAttribute('action') || '';
   if (!form || !action.startsWith('/api/ordenes')) return;
   if (action.endsWith('/cierre')) return;
+  if (form.dataset.submitHandlerBound === 'true') return;
+  form.dataset.submitHandlerBound = 'true';
   const token = () => localStorage.getItem('token');
   const value = id => document.getElementById(id)?.value || '';
   const selectedText = element => element?.selectedOptions?.[0]?.text?.trim() || '';
@@ -69,11 +71,11 @@
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
-    if (localStorage.getItem('role') !== 'editor' || !token()) return alert('Debe iniciar sesion como editor.');
+    if (localStorage.getItem('role') !== 'editor' || !token()) return window.alert('Debe iniciar sesion como editor.');
     const data = payload();
     if (!data) return;
-    if (action.endsWith('/asignacion') && !data.responsable) return alert('Seleccione un técnico responsable.');
-    if ((action.endsWith('/ordenes') && (!data.codigo || !data.maquina_equipo)) || (!action.endsWith('/ordenes') && !data.id)) return alert('Seleccione primero una opcion de la lista.');
+    if (action.endsWith('/asignacion') && !data.responsable) return window.alert('Seleccione un técnico responsable.');
+    if ((action.endsWith('/ordenes') && (!data.codigo || !data.maquina_equipo)) || (!action.endsWith('/ordenes') && !data.id)) return window.alert('Seleccione primero una opcion de la lista.');
     try {
       const response = await API_FETCH(action, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` }, body: JSON.stringify(data) });
       const responseText = await response.text();
@@ -84,11 +86,11 @@
         throw new Error(responseText || 'No se pudo interpretar la respuesta del servidor.');
       }
       if (!response.ok) throw new Error(result.detalle || result.error || 'No se pudo guardar');
-      alert(result.message || 'Operacion completada.');
+      window.alert(result.message || 'Operacion completada.');
       if (action.endsWith('/ordenes') || action.endsWith('/cierre') || action.endsWith('/asignacion') || action.endsWith('/solicitud')) {
         form.reset();
         window.location.href = 'lista_solicitudes.html';
       }
-    } catch (error) { alert(error.message); }
+    } catch (error) { window.alert(error.message); }
   });
 })();
