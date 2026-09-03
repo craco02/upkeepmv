@@ -79,6 +79,7 @@
             <th data-col="fecha_inicio">Fecha Inicio</th>
             <th data-col="fecha_vencimiento">Fecha Vencimiento</th>
             <th data-col="fecha_final">Fecha Final</th>
+            <th data-col="fecha_entrega">Fecha Entrega</th>
             <th data-col="reparacion">Reparación</th>
             <th data-col="responsable">Responsable</th>
             <th data-col="apoyo">Apoyo</th>
@@ -99,6 +100,16 @@
         </thead>
         <tbody></tbody>
       </table>
+    </div>
+  </div>
+  <div id="modalEntrega" class="modal-entrega" role="dialog" aria-modal="true" aria-labelledby="tituloModalEntrega" hidden>
+    <div class="modal-entrega__contenido">
+      <h3 id="tituloModalEntrega">Imprimir entrega</h3>
+      <p id="detalleEntrega">Orden seleccionada.</p>
+      <div class="modal-entrega__acciones">
+        <button id="cancelarEntrega" type="button">Cancelar</button>
+        <button id="imprimirEntrega" type="button">Imprimir entrega</button>
+      </div>
     </div>
   </div>
   <script src="../js/lista_solicitudes.js"></script>

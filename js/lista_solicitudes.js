@@ -3,6 +3,33 @@ let ordenAsc = true;
 let columnaOrden = "id"; // columna inicial
 let ordenInicialDesc = true;
 let filaSeleccionadaId = null;
+let filaSeleccionada = null;
+
+const modalEntrega = document.getElementById('modalEntrega');
+const detalleEntrega = document.getElementById('detalleEntrega');
+
+function seleccionarFila(row, tr) {
+  filaSeleccionadaId = row.id;
+  filaSeleccionada = row;
+  document.querySelectorAll('#tablaOrdenes tbody tr').forEach(fila => {
+    fila.classList.toggle('fila-seleccionada', fila === tr);
+  });
+}
+
+function abrirModalEntrega() {
+  if (!filaSeleccionada) return;
+  if (normalizarTexto(filaSeleccionada.progreso) !== 'completado') {
+    window.alert('Solo se puede imprimir la entrega de órdenes con progreso Completado.');
+    return;
+  }
+  detalleEntrega.textContent = `Orden N.º ${filaSeleccionada.id}: ${filaSeleccionada.maquina_equipo || 'sin equipo declarado'}.`;
+  modalEntrega.hidden = false;
+  document.getElementById('imprimirEntrega').focus();
+}
+
+function cerrarModalEntrega() {
+  modalEntrega.hidden = true;
+}
 
 // Cargar datos desde backend (solo ordenes)
 async function cargarOrdenes() {
@@ -112,11 +139,11 @@ function renderTabla(data) {
     const claseEstado = claseEstadoFila(row);
     if (claseEstado) tr.classList.add(claseEstado);
     if (String(row.id) === String(filaSeleccionadaId)) tr.classList.add("fila-seleccionada");
-    tr.addEventListener("click", () => {
-      filaSeleccionadaId = row.id;
-      document.querySelectorAll("#tablaOrdenes tbody tr").forEach(fila => {
-        fila.classList.toggle("fila-seleccionada", fila === tr);
-      });
+    tr.addEventListener('click', () => seleccionarFila(row, tr));
+    tr.addEventListener('contextmenu', event => {
+      event.preventDefault();
+      seleccionarFila(row, tr);
+      abrirModalEntrega();
     });
     tr.innerHTML = `
       <td>${row.id}</td>
@@ -132,6 +159,7 @@ function renderTabla(data) {
       <td>${formatFecha(row.fecha_inicio)}</td>
       <td>${formatFecha(row.fecha_vencimiento)}</td>
       <td>${formatFecha(row.fecha_final)}</td>
+      <td>${formatFecha(row.fecha_entrega)}</td>
       <td>${row.reparacion || ""}</td>
       <td>${row.responsable || ""}</td>
       <td>${row.apoyo || ""}</td>
@@ -194,6 +222,24 @@ document.getElementById("buscador").addEventListener("input", e => {
     return palabras.every(p => campos.includes(p));
   });
   renderTabla(filtrados);
+});
+
+document.getElementById('cancelarEntrega').addEventListener('click', cerrarModalEntrega);
+modalEntrega.addEventListener('click', event => {
+  if (event.target === modalEntrega) cerrarModalEntrega();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !modalEntrega.hidden) cerrarModalEntrega();
+});
+
+document.getElementById('imprimirEntrega').addEventListener('click', async () => {
+  if (!filaSeleccionada) return;
+  if (normalizarTexto(filaSeleccionada.progreso) !== 'completado') {
+    cerrarModalEntrega();
+    window.alert('Solo se puede imprimir la entrega de órdenes con progreso Completado.');
+    return;
+  }
+  window.location.href = `entrega.html?id=${encodeURIComponent(filaSeleccionada.id)}`;
 });
 
 // Ejecutar carga inicial
