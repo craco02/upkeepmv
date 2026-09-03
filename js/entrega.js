@@ -3,8 +3,13 @@ let ordenActual = null;
 function formatFecha(value) {
   if (!value) return '—';
   const texto = String(value).trim();
-  const match = texto.match(/^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})/);
-  return match ? `${match[3]}/${match[2]}/${match[1]} ${match[4]}:${match[5]}` : texto;
+  const match = texto.match(/^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2}))?/);
+  if (!match) return texto;
+  // Compensa el desfase del navegador únicamente al mostrar el comprobante.
+  const fecha = new Date(match[1], Number(match[2]) - 1, match[3], match[4], match[5], match[6] || 0);
+  fecha.setHours(fecha.getHours() - 4);
+  const dosDigitos = numero => String(numero).padStart(2, '0');
+  return `${dosDigitos(fecha.getDate())}/${dosDigitos(fecha.getMonth() + 1)}/${fecha.getFullYear()} ${dosDigitos(fecha.getHours())}:${dosDigitos(fecha.getMinutes())}`;
 }
 
 function formatFechaEntrega(value) {
