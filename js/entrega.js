@@ -16,31 +16,33 @@ function formatFechaEntrega(value) {
   return formatFecha(value);
 }
 
-function timestampTemporal() {
-  const ahora = new Date();
-  const dosDigitos = numero => String(numero).padStart(2, '0');
-  return `${ahora.getFullYear()}-${dosDigitos(ahora.getMonth() + 1)}-${dosDigitos(ahora.getDate())} ${dosDigitos(ahora.getHours())}:${dosDigitos(ahora.getMinutes())}:${dosDigitos(ahora.getSeconds())}`;
-}
-
-function rellenarCopia(copy, orden, etiqueta) {
+function rellenarCopia(copy, orden, etiqueta, mostrarTimestamp) {
   copy.querySelector('.copy-tag').textContent = etiqueta;
   copy.querySelectorAll('[data-field]').forEach(elemento => { elemento.textContent = orden[elemento.dataset.field] || '—'; });
   copy.querySelectorAll('[data-date]').forEach(elemento => {
     const valor = elemento.dataset.date === 'fecha_entrega'
-      ? (orden.fecha_entrega || orden.fecha_entrega_temporal)
+      ? orden.fecha_entrega
       : orden[elemento.dataset.date];
     elemento.textContent = elemento.dataset.date === 'fecha_entrega' ? formatFechaEntrega(valor) : formatFecha(valor);
   });
-  copy.querySelector('.ts').textContent = `Documento generado el ${formatFecha(new Date().toISOString())}`;
+  copy.querySelector('.ts').textContent = mostrarTimestamp
+    ? `Documento generado el ${formatTimestampImpresion(new Date())} por ${localStorage.getItem('username') || 'usuario desconocido'}`
+    : '';
 }
 
-function mostrarEntrega(orden) {
+function formatTimestampImpresion(value) {
+  const fecha = new Date(value);
+  fecha.setHours(fecha.getHours() + 1);
+  return formatFecha(fecha.toISOString());
+}
+
+function mostrarEntrega(orden, mostrarTimestamp = false) {
   const page = document.getElementById('page');
   const plantilla = document.getElementById('copy-template');
   page.innerHTML = '';
   ['Mantenimiento', 'Operador'].forEach((etiqueta, indice) => {
     const fragmento = plantilla.content.cloneNode(true);
-    rellenarCopia(fragmento, orden, etiqueta);
+    rellenarCopia(fragmento, orden, etiqueta, mostrarTimestamp);
     page.appendChild(fragmento);
     if (indice === 0) {
       const corte = document.createElement('div');
@@ -67,8 +69,6 @@ async function cargarEntrega() {
       throw new Error(detalle.error || 'No se pudo cargar la orden seleccionada.');
     }
     ordenActual = await respuesta.json();
-    // Se muestra un timestamp provisional; no se persiste hasta pulsar Imprimir.
-    if (!ordenActual.fecha_entrega) ordenActual.fecha_entrega_temporal = timestampTemporal();
     mostrarEntrega(ordenActual);
   } catch (error) { page.textContent = error.message; }
 }
@@ -87,7 +87,7 @@ async function imprimirEntrega() {
     const detalle = await respuesta.json().catch(() => ({}));
     if (!respuesta.ok) throw new Error(detalle.error || 'No se pudo guardar la fecha de entrega.');
     ordenActual = detalle;
-    mostrarEntrega(ordenActual);
+    mostrarEntrega(ordenActual, true);
     window.print();
   } catch (error) {
     window.alert(error.message);
