@@ -33,6 +33,7 @@ function crearSelectConBusqueda(selectId) {
   let resultadosActuales = [];
   let indiceActivo = -1;
   let datos = [];
+  const solicitudInicialId = new URLSearchParams(window.location.search).get('id');
 
   async function cargarOrdenes() {
     try {
@@ -45,6 +46,9 @@ function crearSelectConBusqueda(selectId) {
         .filter(row => row.progreso && !excluidos.includes(row.progreso))
         .sort((a, b) => b.id - a.id)
         .slice(0, 1500);
+
+      const solicitudInicial = datos.find(row => String(row.id) === String(solicitudInicialId));
+      if (solicitudInicial) seleccionar(solicitudInicial);
     } catch (err) {
       console.error("Error cargando ordenes:", err);
     }
@@ -199,6 +203,8 @@ function crearSelectConBusqueda(selectId) {
       cerrarLista();
     }
   });
+
+  cargarOrdenes();
 }
 
 // Inicializar buscador

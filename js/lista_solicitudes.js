@@ -7,6 +7,10 @@ let filaSeleccionada = null;
 
 const modalEntrega = document.getElementById('modalEntrega');
 const detalleEntrega = document.getElementById('detalleEntrega');
+const tituloModalEntrega = document.getElementById('tituloModalEntrega');
+const asignarSolicitud = document.getElementById('asignarSolicitud');
+const cerrarSolicitud = document.getElementById('cerrarSolicitud');
+const imprimirEntrega = document.getElementById('imprimirEntrega');
 
 function seleccionarFila(row, tr) {
   filaSeleccionadaId = row.id;
@@ -18,13 +22,17 @@ function seleccionarFila(row, tr) {
 
 function abrirModalEntrega() {
   if (!filaSeleccionada) return;
-  if (normalizarTexto(filaSeleccionada.progreso) !== 'completado') {
-    window.alert('Solo se puede imprimir la entrega de órdenes con progreso Completado.');
-    return;
-  }
-  detalleEntrega.textContent = `Orden N.º ${filaSeleccionada.id}: ${filaSeleccionada.maquina_equipo || 'sin equipo declarado'}.`;
+  const completada = normalizarTexto(filaSeleccionada.progreso) === 'completado';
+  const descripcion = filaSeleccionada.maquina_equipo || filaSeleccionada.nombre_declarado || 'sin equipo declarado';
+
+  tituloModalEntrega.textContent = completada ? 'Imprimir entrega' : 'Solicitud pendiente';
+  detalleEntrega.textContent = `Orden N.º ${filaSeleccionada.id}: ${descripcion}.`;
+  modalEntrega.classList.toggle('modal-entrega--pendiente', !completada);
+  asignarSolicitud.hidden = completada;
+  cerrarSolicitud.hidden = completada;
+  imprimirEntrega.hidden = !completada;
   modalEntrega.hidden = false;
-  document.getElementById('imprimirEntrega').focus();
+  (completada ? imprimirEntrega : asignarSolicitud).focus();
 }
 
 function cerrarModalEntrega() {
@@ -103,6 +111,14 @@ function normalizarTexto(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function fechaVencimiento(row) {
+  if (!row.fecha_vencimiento) return null;
+  const vencimiento = new Date(String(row.fecha_vencimiento).replace(' ', 'T'));
+  if (Number.isNaN(vencimiento.getTime())) return null;
+  vencimiento.setTime(vencimiento.getTime() - 4 * 60 * 60 * 1000);
+  return vencimiento;
+}
+
 function claseEstadoFila(row) {
   const progreso = normalizarTexto(row.progreso);
   const estadoEjecucion = normalizarTexto(row.estado_ejecucion);
@@ -115,17 +131,11 @@ function claseEstadoFila(row) {
     if (estadoEjecucion === "con retraso") return "estado-completado-retraso";
   }
 
-  if (progreso === "no iniciado") {
-    const vencimiento = row.fecha_vencimiento ? new Date(String(row.fecha_vencimiento).replace(' ', 'T').replace(/-/g, '-')) : null;
-    if (vencimiento) {
-      // Restar 4 horas (14400000 ms) para ajustar la zona horaria
-      vencimiento.setTime(vencimiento.getTime() - 4 * 60 * 60 * 1000);
-    }
-    const ahora = new Date();
-    return vencimiento && !Number.isNaN(vencimiento.getTime()) && vencimiento < ahora
-      ? "estado-vencido"
-      : "estado-pendiente";
-  }
+  const vencimiento = fechaVencimiento(row);
+  const vencida = vencimiento && vencimiento < new Date();
+
+  if (progreso === "asignado") return vencida ? "estado-vencido" : "estado-asignado";
+  if (progreso === "no iniciado") return vencida ? "estado-vencido" : "estado-pendiente";
 
   return "";
 }
@@ -232,15 +242,22 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !modalEntrega.hidden) cerrarModalEntrega();
 });
 
-document.getElementById('imprimirEntrega').addEventListener('click', async () => {
+imprimirEntrega.addEventListener('click', async () => {
   if (!filaSeleccionada) return;
-  if (normalizarTexto(filaSeleccionada.progreso) !== 'completado') {
-    cerrarModalEntrega();
-    window.alert('Solo se puede imprimir la entrega de órdenes con progreso Completado.');
-    return;
-  }
   window.location.href = `entrega.html?id=${encodeURIComponent(filaSeleccionada.id)}`;
 });
+
+function abrirFormularioSolicitud(ruta) {
+  if (!filaSeleccionada) return;
+  const parametros = new URLSearchParams({
+    id: String(filaSeleccionada.id),
+    detalle: filaSeleccionada.maquina_equipo || filaSeleccionada.nombre_declarado || ''
+  });
+  window.location.href = `${ruta}?${parametros.toString()}`;
+}
+
+asignarSolicitud.addEventListener('click', () => abrirFormularioSolicitud('asinar.html'));
+cerrarSolicitud.addEventListener('click', () => abrirFormularioSolicitud('cierre.html'));
 
 // Ejecutar carga inicial
 cargarOrdenes();

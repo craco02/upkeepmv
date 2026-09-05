@@ -101,12 +101,23 @@
         <tbody></tbody>
       </table>
     </div>
+    <div class="leyenda-estados" aria-label="Estados de las solicitudes">
+      <span><i class="indicador-estado indicador-pendiente"></i>Pendiente</span>
+      <span><i class="indicador-estado indicador-asignado"></i>Asignada</span>
+      <span><i class="indicador-estado indicador-vencido"></i>Vencida</span>
+      <span><i class="indicador-estado indicador-completado"></i>Completada</span>
+      <span><i class="indicador-estado indicador-retraso"></i>Con retraso</span>
+      <span><i class="indicador-estado indicador-reprogramado"></i>Reprogramada</span>
+      <span><i class="indicador-estado indicador-baja"></i>De baja</span>
+    </div>
   </div>
   <div id="modalEntrega" class="modal-entrega" role="dialog" aria-modal="true" aria-labelledby="tituloModalEntrega" hidden>
     <div class="modal-entrega__contenido">
       <h3 id="tituloModalEntrega">Imprimir entrega</h3>
       <p id="detalleEntrega">Orden seleccionada.</p>
       <div class="modal-entrega__acciones">
+        <button id="asignarSolicitud" type="button" hidden>Asignar personal</button>
+        <button id="cerrarSolicitud" type="button" hidden>Cerrar solicitud</button>
         <button id="cancelarEntrega" type="button">Cancelar</button>
         <button id="imprimirEntrega" type="button">Imprimir entrega</button>
       </div>
@@ -115,3 +126,13 @@
   <script src="../js/lista_solicitudes.js"></script>
 </body>
 </html>
+
+    <div class="leyenda-estados" aria-label="Estados de las solicitudes">
+      <span><i class="indicador-estado indicador-pendiente"></i>Pendiente</span>
+      <span><i class="indicador-estado indicador-asignado"></i>Asignada</span>
+      <span><i class="indicador-estado indicador-vencido"></i>Vencida</span>
+      <span><i class="indicador-estado indicador-completado"></i>Completada</span>
+      <span><i class="indicador-estado indicador-retraso"></i>Con retraso</span>
+      <span><i class="indicador-estado indicador-reprogramado"></i>Reprogramada</span>
+      <span><i class="indicador-estado indicador-baja"></i>De baja</span>
+    </div>
