@@ -27,6 +27,25 @@ const API_URL = (path) => {
 
 const API_JSON_HEADERS = { 'Content-Type': 'application/json' };
 
-const API_FETCH = (path, options = {}) => {
-  return fetch(API_URL(path), options);
+function clearExpiredSession() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  localStorage.removeItem('role');
+  if (!window.location.pathname.endsWith('/index.html') && window.location.pathname !== '/') {
+    window.location.href = '../index.html';
+  } else {
+    window.location.reload();
+  }
+}
+
+const API_FETCH = async (path, options = {}) => {
+  const url = API_URL(path);
+  const token = localStorage.getItem('token');
+  const headers = { ...(options.headers || {}) };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const response = await fetch(url, { ...options, headers });
+  const isLoginRequest = String(path).includes('/api/auth/login');
+  if (response.status === 401 && !isLoginRequest) clearExpiredSession();
+  return response;
 };
