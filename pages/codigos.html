@@ -7,17 +7,25 @@
         <link rel="icon" href="../img/Logo.png" type="image/png" sizes="32x32">
         <link rel="stylesheet" href="../css/styles.css">
         <link rel="stylesheet" href="../css/codigos.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </head>
     <body>
         <header >
-            <nav class="nav-bar">
-                 <ul class="list-bar">
-                    <li><a href="../index.html">Inicio</a></li>
-                    <li><a href="../index.html#solicitudes">Solicitudes</a></li>                    <li><a href="../index.html#mpp">MPP</a></li>                    <li><a href="../index.html#informaciones">Informaciones</a></li>
-                    <li><a href="../index.html#form-adds">Formularios</a></li>
-                    <li><a href="../index.html#otros">Otros</a></li>
-                    <li><a href="../index.html#contacto">Contacto</a></li>
-                 </ul>
+          <nav class="nav-bar" aria-label="Navegación principal">
+            <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-menu-wrap">
+              <ul class="list-bar">
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#solicitudes">Solicitudes</a></li>
+                <li><a href="../index.html#mpp">MPP</a></li>
+                <li><a href="../index.html#informaciones">Informaciones</a></li>
+                <li><a href="../index.html#form-adds">Formularios</a></li>
+                <li><a href="../index.html#otros">Otros</a></li>
+                <li><a href="../index.html#contacto">Contacto</a></li>
+              </ul>
+            </div>
             </nav>
             <div class="banner">
             <div class="logo"><img height="150" width="150" src="../img/Logo.png" alt="logo metalurgica vera"></div>
@@ -72,5 +80,6 @@
 
         <script src="../data/codigos-data.js"></script>
         <script src="../js/codigos.js"></script>
+        <script src="../js/nav-responsive.js"></script>
   </body>
 </html>
