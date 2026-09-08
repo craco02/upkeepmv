@@ -31,6 +31,11 @@ function clearExpiredSession() {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
   localStorage.removeItem('role');
+  if (new URLSearchParams(window.location.search).has('embed')) {
+    const dashboard = document.getElementById('dashboard');
+    if (dashboard) dashboard.innerHTML = '<div class="empty session-required">Debe iniciar sesión para visualizar el reporte.</div>';
+    return;
+  }
   if (!window.location.pathname.endsWith('/index.html') && window.location.pathname !== '/') {
     window.location.href = '../index.html';
   } else {
