@@ -1619,6 +1619,14 @@ padding: 0 0 20px 0;
   transform: translateY(-2px);
   cursor: pointer;
 }
+
+.login-modal-content button:disabled {
+    background-color: #9ca3af;
+    color: #e5e7eb;
+    cursor: not-allowed;
+    opacity: 1;
+    transform: none;
+}
 .list-bar span {
     font-size: 25px;
     display: inline-flex;

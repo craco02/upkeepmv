@@ -41,11 +41,12 @@ function crearSelectConBusqueda(selectId) {
       let data = await res.json();
 
       // Excluir los progresos que no deben mostrarse y ordenar descendente por id
-      const excluidos = ['Completado', 'De baja'];
+      const excluidos = ['Completado'];
+      if (!document.querySelector('form[data-modificacion="true"]')) excluidos.push('De baja');
       datos = data
         .filter(row => row.progreso && !excluidos.includes(row.progreso))
-        .sort((a, b) => b.id - a.id)
-        .slice(0, 1500);
+        .sort((a, b) => b.id - a.id);
+      if (!document.querySelector('form[data-modificacion="true"]')) datos = datos.slice(0, 1500);
 
       const solicitudInicial = datos.find(row => String(row.id) === String(solicitudInicialId));
       if (solicitudInicial) seleccionar(solicitudInicial);
