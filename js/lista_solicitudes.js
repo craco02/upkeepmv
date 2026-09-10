@@ -46,7 +46,7 @@ async function cargarOrdenes() {
     let data = await res.json();
 
     // Ordenar por id descendente y limitar a 1500
-    datos = data.sort((a, b) => b.id - a.id).slice(0, 1500);
+    datos = data.sort((a, b) => b.id - a.id).slice(0, 3000);
 
     renderTabla(datos);
 
