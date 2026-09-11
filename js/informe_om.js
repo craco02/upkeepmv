@@ -20,6 +20,13 @@ function valoresDesdeURL() {
   Array.from(form.elements).forEach((el) => {
     if (el.name && params.has(el.name)) valores[el.name] = params.get(el.name);
   });
+
+  const id = (params.get('id') || '').trim();
+  const maquinaEquipo = (params.get('maquina_equipo') || '').trim();
+  const nombreDeclarado = (params.get('nombre_declarado') || '').trim();
+  const asunto = [id, maquinaEquipo, nombreDeclarado].filter(Boolean).join(' ');
+  if (asunto) valores.equipo = 'OM: ' + asunto;
+
   return valores;
 }
 

@@ -29,6 +29,9 @@ function abrirInforme(row) {
     .join(' - ');
 
   const parametros = new URLSearchParams({
+    id: row.id || '',
+    maquina_equipo: equipo,
+    nombre_declarado: nombreDeclarado,
     para: 'Metalúrgica Vera S.R.L.',
     reparador: row.responsable || '',
     fecha: formatFecha(row.fecha_inicio) || '',
