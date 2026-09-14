@@ -18,11 +18,41 @@ window.fetch = (url, options = {}) => {
   }
   return fetchOriginal(normalizedUrl, options);
 };
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+function closeUserMenu() {
+  const dropdown = document.getElementById('navUserDropdown');
+  const toggle = document.getElementById('navUserToggle');
+  if (dropdown) dropdown.classList.remove('is-open');
+  if (toggle) toggle.setAttribute('aria-expanded', 'false');
+}
+
 function renderNav() {
   const token = localStorage.getItem('token');
   const username = localStorage.getItem('username');
   if (token && username) {
-    navLogin.innerHTML = `<span>&#128100; ${username}</span><div id="logoutDiv" class="nav-btn">Cerrar sesi\u00f3n</div>`;
+    navLogin.innerHTML = `
+      <div class="nav-user-menu">
+        <button type="button" class="nav-user-toggle" id="navUserToggle" aria-haspopup="true" aria-expanded="false">
+          <span class="nav-user-icon">&#128100;</span><span class="nav-user-name">${escapeHtml(username)}</span><span class="nav-user-caret">&#9662;</span>
+        </button>
+        <ul class="nav-user-dropdown" id="navUserDropdown" role="menu">
+          <li role="none"><button type="button" id="logoutDiv" class="nav-user-item" role="menuitem">Cerrar sesi\u00f3n</button></li>
+          <li role="none"><button type="button" class="nav-user-item" role="menuitem" disabled>Cambiar contrase\u00f1a</button></li>
+        </ul>
+      </div>
+    `;
+    const toggle = document.getElementById('navUserToggle');
+    const dropdown = document.getElementById('navUserDropdown');
+    toggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const isOpen = dropdown.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
     document.getElementById('logoutDiv').addEventListener('click', () => {
       localStorage.removeItem('token'); localStorage.removeItem('username'); localStorage.removeItem('role');
       form.reset(); window.location.reload();
@@ -39,8 +69,10 @@ closeModal.addEventListener('click', closeLoginModal);
 loginModal.addEventListener('click', event => {
   if (event.target === loginModal) closeLoginModal();
 });
+document.addEventListener('click', () => closeUserMenu());
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && loginModal.classList.contains('is-visible')) closeLoginModal();
+  if (event.key === 'Escape') closeUserMenu();
 });
 form.addEventListener('submit', async event => {
   event.preventDefault();

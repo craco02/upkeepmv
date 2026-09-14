@@ -91,13 +91,15 @@ function obtenerEstadoMantenimiento(mantenimiento) {
 
   if (!inicio) return "";
 
-  if (reprogFin && (ejecInicio || ejecFin)) return "reprogramadoEjecucion";
-  if (reprogFin && hoy > reprogFin && !(ejecInicio || ejecFin)) return "vencidoReprog";
-  if (reprogInicio && hoy >= reprogInicio && !(ejecInicio || ejecFin)) return "reprogramado";
-  if (reprogInicio && !(ejecInicio || ejecFin)) return "reemplazado";
-  if (fin && hoy > fin && !(ejecInicio || ejecFin)) return "vencido";
+  // Reprogramado: pendiente de ejecución siempre amarillo, sin esperar a que llegue la fecha.
+  if (reprogInicio) {
+    if (ejecInicio || ejecFin) return "reprogramadoEjecucion";
+    if (reprogFin && hoy > reprogFin) return "vencidoReprog";
+    return "reprogramado";
+  }
+
   if (ejecInicio || ejecFin) return "completado";
-  if (reprogInicio && (ejecInicio || ejecFin)) return "reprogramadoEjecucion";
+  if (fin && hoy > fin) return "vencido";
   return "programado";
 }
 
@@ -122,8 +124,6 @@ function obtenerClaseSemana(mantenimiento, semana, anio) {
     if (estado === 'vencidoReprog') return 'vencidoReprog';
     if (estado === 'reprogramado') return 'reprogramado';
     if (estado === 'reprogramadoEjecucion') return 'reprogramadoEjecucion';
-    if (estado === 'completado') return 'completado';
-    if (estado === 'reemplazado') return 'reemplazado';
   }
 
   if (semana !== semanaInicio) return "";
@@ -131,8 +131,6 @@ function obtenerClaseSemana(mantenimiento, semana, anio) {
   const estado = obtenerEstadoMantenimiento(mantenimiento);
   if (estado === 'vencido') return 'vencido';
   if (estado === 'completado') return 'completado';
-  if (estado === 'reprogramadoEjecucion') return 'reprogramadoEjecucion';
-  if (estado === 'reemplazado') return 'reemplazado';
   if (estado === 'programado') return 'programado';
   return "";
 }

@@ -41,7 +41,8 @@ function agregarRangoDeFechas(fechaInicial, fechaFinal, conjunto) {
   }
 }
 
-function obtenerEstadoMantenimientoMensual(mantenimiento) {
+function obtenerEstadoMantenimientoMensual(mantenimiento, fechaISO) {
+  const fecha = fechaISO ? parseFechaLocal(fechaISO) : null;
   const inicio = parseFechaLocal(mantenimiento.fecha_inicio);
   const fin = parseFechaLocal(mantenimiento.fecha_final) || inicio;
   const reprogInicio = parseFechaLocal(mantenimiento.reprogramacion_inicio);
@@ -51,13 +52,20 @@ function obtenerEstadoMantenimientoMensual(mantenimiento) {
   const hoy = new Date();
 
   if (!inicio) return '';
-  if (reprogFin && (ejecInicio || ejecFin)) return 'reprogramadoEjecucion';
-  if (reprogFin && hoy > reprogFin && !(ejecInicio || ejecFin)) return 'vencidoReprog';
-  if (reprogInicio && hoy >= reprogInicio && !(ejecInicio || ejecFin)) return 'reprogramado';
-  if (reprogInicio && !(ejecInicio || ejecFin)) return 'reemplazado';
-  if (fin && hoy > fin && !(ejecInicio || ejecFin)) return 'vencido';
+
+  // La fecha original queda gris cuando el mantenimiento fue reprogramado.
+  const enRangoOriginal = fecha && fecha >= inicio && fecha <= fin;
+  if (reprogInicio && enRangoOriginal) return 'reemplazado';
+
+  // Reprogramado: pendiente de ejecución siempre amarillo, sin esperar a que llegue la fecha.
+  if (reprogInicio) {
+    if (ejecInicio || ejecFin) return 'reprogramadoEjecucion';
+    if (reprogFin && hoy > reprogFin) return 'vencidoReprog';
+    return 'reprogramado';
+  }
+
   if (ejecInicio || ejecFin) return 'completado';
-  if (reprogInicio && (ejecInicio || ejecFin)) return 'reprogramadoEjecucion';
+  if (fin && hoy > fin) return 'vencido';
   return 'programado';
 }
 
@@ -108,7 +116,7 @@ function generarCalendarioMensual(mantenimientos, mes, anio) {
     const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const eventos = fechasConEventos.get(fecha) || [];
     const estadoDominante = eventos.reduce((estadoMasFuerte, evento) => {
-      const estadoActual = obtenerEstadoMantenimientoMensual(evento);
+      const estadoActual = obtenerEstadoMantenimientoMensual(evento, fecha);
       return prioridadEstado(estadoActual) > prioridadEstado(estadoMasFuerte) ? estadoActual : estadoMasFuerte;
     }, '');
     const clase = eventos.length > 0 ? `evento ${estadoDominante}`.trim() : '';
@@ -116,7 +124,7 @@ function generarCalendarioMensual(mantenimientos, mes, anio) {
     html += `<td class="${clase}"><div class="dia-contenido"><div class="dia-num">${d}</div>`;
 
     eventos.forEach(e => {
-      const estado = obtenerEstadoMantenimientoMensual(e);
+      const estado = obtenerEstadoMantenimientoMensual(e, fecha);
       html += `<div class="evento-item ${estado}">${e.maquina_equipo}<br><small>${e.codigo}</small></div>`;
     });
 

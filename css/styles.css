@@ -166,6 +166,93 @@ header {
 #nav-login .nav-btn {
     flex-shrink: 0;
 }
+
+/* Menú desplegable de usuario (login/logout) */
+.nav-user-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    min-width: 0;
+    max-width: 100%;
+}
+.nav-user-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+.nav-user-toggle:hover,
+.nav-user-toggle[aria-expanded="true"] {
+    background-color: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+}
+.nav-user-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: clamp(12px, 1.6vw, 15px);
+}
+.nav-user-caret {
+    flex-shrink: 0;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+.nav-user-toggle[aria-expanded="true"] .nav-user-caret {
+    transform: rotate(180deg);
+}
+.nav-user-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 180px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #0a6b0a;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 1100;
+}
+.nav-user-dropdown.is-open {
+    display: block;
+}
+.nav-user-item {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+.nav-user-item:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.16);
+}
+.nav-user-item:disabled {
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+}
 .list-bar a,
 .nav-btn {
     display: inline-flex;
