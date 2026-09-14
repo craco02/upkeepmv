@@ -1255,6 +1255,21 @@ padding: 0 0 20px 0;
     -moz-appearance: textfield;
 }
 
+.solicitud .fecha-reprogramacion {
+    width: 100%;
+    max-width: 240px;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font: inherit;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.select-buscador-original {
+    display: none;
+}
+
 .solicitud input[type="number"]::-webkit-outer-spin-button,
 .solicitud input[type="number"]::-webkit-inner-spin-button {
     height: auto;

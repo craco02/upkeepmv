@@ -66,7 +66,22 @@
 
                     <div>
                         <label for="fecha_rep">Seleccione la fecha de reprogramación:</label>
-                        <input type="date" id="fecha_rep" name="reprogramacion_inicio" required style="width: 100%; max-width: 240px; padding: 0.7rem 0.9rem; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; background: #fff;">
+                        <input class="fecha-reprogramacion" type="date" id="fecha_rep" name="reprogramacion_inicio" required>
+                    </div>
+
+                    <div>
+                        <label for="motivo_reprogramacion">Motivo de reprogramación</label>
+                        <textarea id="motivo_reprogramacion" name="motivo_reprogramacion" rows="4" required></textarea>
+                    </div>
+
+                    <div>
+                        <label for="solicitante_reprogramacion">Solicitante de la reprogramación</label>
+                        <input type="text" id="solicitante_reprogramacion" name="solicitante_reprogramacion" required>
+                    </div>
+
+                    <div>
+                        <label for="vinculo_correo_reprogramacion">Vínculo de correo de solicitud de reprogramación</label>
+                        <input type="text" id="vinculo_correo_reprogramacion" name="vinculo_correo_reprogramacion" placeholder="https://..." required>
                     </div>
 
                     <button type="submit">Reprogramar Mantenimiento</button>
@@ -74,44 +89,7 @@
 
                 <script src="../js/mpp-alert.js"></script>
                 <script src="../js/mantenimientos-preventivos-select.js"></script>
-                <script>
-                  document.addEventListener('DOMContentLoaded', () => {
-                    const form = document.getElementById('formReprogramarMPP');
-                    if (!form) return;
-                    form.addEventListener('submit', async (event) => {
-                      event.preventDefault();
-                      const payload = {
-                        id: document.getElementById('maquina')?.value,
-                        reprogramacion_inicio: document.getElementById('fecha_rep')?.value
-                      };
-
-                      try {
-                        const response = await API_FETCH('/api/mantenimientos-preventivos/reprogramacion', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(payload)
-                        });
-                        const data = await response.json().catch(() => ({}));
-                        if (!response.ok) throw new Error(data.error || data.detalle || 'No se pudo reprogramar');
-                        window.mostrarMensajeMPP?.({
-                          titulo: 'Reprogramación exitosa',
-                          texto: 'La reprogramación del mantenimiento se guardó correctamente.',
-                          redirigir: true,
-                          destino: './vista_mpp.html'
-                        });
-                        form.reset();
-                      } catch (error) {
-                        console.error(error);
-                        window.mostrarMensajeMPP?.({
-                          titulo: 'Error',
-                          texto: error.message || 'Error al reprogramar el mantenimiento',
-                          redirigir: true,
-                          destino: './vista_mpp.html'
-                        });
-                      }
-                    });
-                  });
-                </script>
+                <script src="../js/reprogramar-mpp.js"></script>
 
             </main>
     </body>

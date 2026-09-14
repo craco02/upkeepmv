@@ -63,7 +63,7 @@
       </div>
       <label class="view-control" for="selectorVista">
         <span>Vista</span>
-        <select id="selectorVista" onchange="mostrarVista(this.value)">
+        <select id="selectorVista">
           <option value="tabla">Tabla</option>
           <option value="mensual">Calendario Mensual</option>
           <option value="anual" selected>Calendario Anual</option>
@@ -81,7 +81,7 @@
   <section id="vistaMensual" hidden>
     <h2>Calendario Mensual</h2>
     <label for="mes">Mes:</label>
-    <select id="mes" onchange="cambiarMes(this.value)">
+    <select id="mes">
       <option value="1">Enero</option>
       <option value="2">Febrero</option>
       <option value="3">Marzo</option>
@@ -158,62 +158,6 @@
   <script src="../js/preventivo-programado-mensual.js"></script>
   <script src="../js/preventivo-programado-anual.js"></script>
   <script src="../js/preventivo-programado-seleccion.js"></script>
-  <script>
-    function estaLogueado() {
-      return Boolean(localStorage.getItem('token'));
-    }
-
-    function ocultarTodasLasVistas() {
-      ['vistaTabla', 'vistaMensual', 'vistaAnual'].forEach((id) => {
-        const elemento = document.getElementById(id);
-        if (elemento) elemento.hidden = true;
-      });
-    }
-
-    function aplicarVista(vista) {
-      const selector = document.getElementById('selectorVista');
-      const vistaSeleccionada = vista || 'anual';
-      if (selector) selector.value = vistaSeleccionada;
-      ocultarTodasLasVistas();
-      const mapa = {
-        tabla: 'vistaTabla',
-        mensual: 'vistaMensual',
-        anual: 'vistaAnual'
-      };
-      const el = document.getElementById(mapa[vistaSeleccionada] || 'vistaAnual');
-      if (el) el.hidden = false;
-    }
-
-    function actualizarVisibilidadDeVistas() {
-      const tieneLogin = estaLogueado();
-      const selector = document.getElementById('selectorVista');
-      if (selector) {
-        selector.disabled = !tieneLogin;
-      }
-
-      if (!tieneLogin) {
-        ocultarTodasLasVistas();
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) loginModal.classList.add('is-visible');
-        return;
-      }
-
-      const vistaActual = selector && selector.value ? selector.value : 'anual';
-      aplicarVista(vistaActual);
-    }
-
-    function mostrarVista(vista) {
-      if (!estaLogueado()) {
-        actualizarVisibilidadDeVistas();
-        return;
-      }
-      aplicarVista(vista);
-    }
-
-    ocultarTodasLasVistas();
-    aplicarVista('anual');
-    document.addEventListener('DOMContentLoaded', actualizarVisibilidadDeVistas);
-    actualizarVisibilidadDeVistas();
-  </script>
+  <script src="../js/vista-mpp.js"></script>
 </body>
 </html>

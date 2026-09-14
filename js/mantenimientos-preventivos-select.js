@@ -9,7 +9,6 @@ async function cargarSelectMantenimientosPreventivos(selectId = 'maquina') {
 
   select.innerHTML = '<option value="">Seleccione un mantenimiento</option>';
   select.classList.add('select-buscador-original');
-  select.style.display = 'none';
 
   const contenedor = document.createElement('div');
   contenedor.className = 'select-buscador';
@@ -117,9 +116,7 @@ async function cargarSelectMantenimientosPreventivos(selectId = 'maquina') {
       }
     });
 
-    if (items.length) {
-      mostrarResultados('');
-    } else {
+    if (!items.length) {
       const vacio = document.createElement('li');
       vacio.className = 'select-buscador-vacio';
       vacio.textContent = 'No hay mantenimientos pendientes';
