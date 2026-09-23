@@ -2,10 +2,11 @@
   const form = document.querySelector('main form');
   const action = form?.getAttribute('action') || '';
   if (!form || !action.startsWith('/api/ordenes')) return;
-  if (action.endsWith('/cierre')) return;
+  if (action.endsWith('/cierre') && form.dataset.reprogramar !== 'true') return;
   if (form.dataset.submitHandlerBound === 'true') return;
   form.dataset.submitHandlerBound = 'true';
   let isSubmitting = false;
+  const idempotencyKey = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
   const token = () => localStorage.getItem('token');
   const value = id => document.getElementById(id)?.value || '';
@@ -53,6 +54,13 @@
   }
 
   function payload() {
+    if (form.dataset.reprogramar === 'true') {
+      return {
+        id: value('maquina'),
+        notas: value('observacion'),
+        progreso: 'Reprogramado'
+      };
+    }
     if (action.endsWith('/cierre')) {
       const selects = form.querySelectorAll('select');
       return {
@@ -89,7 +97,9 @@
     }
 
     try {
-      const response = await API_FETCH(action, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` }, body: JSON.stringify(data) });
+      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` };
+      if (action.endsWith('/ordenes')) headers['X-Idempotency-Key'] = idempotencyKey;
+      const response = await API_FETCH(action, { method: 'POST', headers, body: JSON.stringify(data) });
       const responseText = await response.text();
       let result = {};
       try {
@@ -103,8 +113,8 @@
         form.reset();
         window.location.href = 'lista_solicitudes.html';
       }
-    } catch (error) { 
-      window.alert(error.message); 
+    } catch (error) {
+      window.alert(error.message);
     } finally {
       isSubmitting = false;
       if (submitButton) {

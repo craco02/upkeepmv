@@ -139,7 +139,7 @@ function crearSelectConBusqueda(selectId) {
         opcion.setAttribute('role', 'option');
         opcion.tabIndex = -1;
         descripcion.textContent = etiquetaSolicitud(item);
-        codigo.textContent = `ID: ${item.id}`;
+        codigo.textContent = `ID: ${item.id} · Estado: ${item.progreso}`;
         opcion.appendChild(descripcion);
         opcion.appendChild(codigo);
 

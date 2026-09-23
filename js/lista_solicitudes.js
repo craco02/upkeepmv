@@ -10,6 +10,7 @@ const detalleEntrega = document.getElementById('detalleEntrega');
 const tituloModalEntrega = document.getElementById('tituloModalEntrega');
 const asignarSolicitud = document.getElementById('asignarSolicitud');
 const cerrarSolicitud = document.getElementById('cerrarSolicitud');
+const reprogramarSolicitud = document.getElementById('reprogramarSolicitud');
 const imprimirEntrega = document.getElementById('imprimirEntrega');
 
 function seleccionarFila(row, tr) {
@@ -30,6 +31,7 @@ function abrirModalEntrega() {
   modalEntrega.classList.toggle('modal-entrega--pendiente', !completada);
   asignarSolicitud.hidden = completada;
   cerrarSolicitud.hidden = completada;
+  reprogramarSolicitud.hidden = completada;
   imprimirEntrega.hidden = !completada;
   modalEntrega.hidden = false;
   (completada ? imprimirEntrega : asignarSolicitud).focus();
@@ -256,8 +258,9 @@ function abrirFormularioSolicitud(ruta) {
   window.location.href = `${ruta}?${parametros.toString()}`;
 }
 
-asignarSolicitud.addEventListener('click', () => abrirFormularioSolicitud('asinar.html'));
+asignarSolicitud.addEventListener('click', () => abrirFormularioSolicitud('asignar.html'));
 cerrarSolicitud.addEventListener('click', () => abrirFormularioSolicitud('cierre.html'));
+reprogramarSolicitud.addEventListener('click', () => abrirFormularioSolicitud('reprogramar.html'));
 
 // Ejecutar carga inicial
 cargarOrdenes();
