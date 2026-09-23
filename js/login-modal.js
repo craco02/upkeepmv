@@ -72,6 +72,7 @@ function getPasswordModal() {
       passwordMessage.textContent = data.message;
       passwordMessage.style.color = 'green';
       passwordForm.reset();
+      setTimeout(close, 1500);
     } catch (error) {
       passwordMessage.textContent = `Error: ${error.message}`;
       passwordMessage.style.color = 'red';
