@@ -89,6 +89,18 @@ Estado del Proyecto
 
 🟢 Prototipo Funcional
 
+Publicación en GitHub Pages
+
+Este directorio está preparado para publicarse como la raíz del repositorio `craco02/upkeepmv` en:
+
+`https://craco02.github.io/upkeepmv/`
+
+Al crear o actualizar el repositorio, copia el contenido de `frontend` directamente en su raíz. Deben quedar `index.html`, `css/`, `js/`, `pages/`, `img/`, `data/` y `.nojekyll` en ese nivel; no debe quedar una carpeta `frontend` intermedia.
+
+El workflow incluido en `.github/workflows/deploy-pages.yml` publica automáticamente cada push a `main`. En la configuración del repositorio, selecciona GitHub Actions como origen de Pages.
+
+La aplicación continúa consumiendo la API configurada en `js/api-config.js`, actualmente `https://177.71.251.230`. El servidor de la API debe estar disponible por HTTPS y aceptar solicitudes desde GitHub Pages.
+
 Actualmente el proyecto se encuentra en estado funcional y operativo, permitiendo navegar entre las distintas secciones e interactuar con los recursos disponibles.
 
 Al tratarse de un proyecto académico, existen oportunidades de mejora futuras, tales como:
