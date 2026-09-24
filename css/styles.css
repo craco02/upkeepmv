@@ -1629,7 +1629,8 @@ padding: 0 0 20px 0;
 }
 
 .machine-fields textarea,
-.registro-fields input {
+.registro-fields input,
+.registro-fields select {
     width: 100%;
     min-height: 44px;
     padding: 10px 12px;
@@ -1649,7 +1650,8 @@ padding: 0 0 20px 0;
 
 .machine-fields input:focus,
 .machine-fields textarea:focus,
-.registro-fields input:focus {
+.registro-fields input:focus,
+.registro-fields select:focus {
     border-color: #0f7a32;
     box-shadow: 0 0 0 3px rgba(15, 122, 50, 0.18);
 }
@@ -1659,6 +1661,10 @@ padding: 0 0 20px 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px 22px;
     margin-top: 28px;
+}
+
+.maintenance-type-select {
+    margin-bottom: 28px;
 }
 
 .registro-fields label {
