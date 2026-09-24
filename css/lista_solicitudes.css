@@ -27,12 +27,33 @@ h2 {
 }
 
 #buscador {
-  width: 100%;
+  flex: 1 1 360px;
+  min-width: 220px;
   padding: 10px;
-  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+.buscador-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.buscador-acciones button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  background: #007bff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.buscador-acciones button:hover { background: #0056b3; }
+.buscador-acciones button:last-child { background: #475569; }
+.buscador-acciones button:last-child:hover { background: #334155; }
 
 .leyenda-estados {
   display: flex;

@@ -59,7 +59,11 @@
     <h2>Órdenes de Mantenimiento</h2>
 
     <!-- Buscador -->
-    <input type="text" id="buscador" placeholder="Buscar por código, nombre o máquina/equipo...">
+    <div class="buscador-acciones">
+      <input type="text" id="buscador" placeholder="Buscar por código, nombre o máquina/equipo...">
+      <button type="button" id="buscarRegistros">Buscar en registros</button>
+      <button type="button" id="refrescarRegistros" title="Limpiar búsqueda y cargar los registros recientes">Refresh</button>
+    </div>
 
     <!-- Contenedor con scroll horizontal -->
     <div class="table-scroll">

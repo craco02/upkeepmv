@@ -4,6 +4,7 @@ let columnaOrden = "id"; // columna inicial
 let ordenInicialDesc = true;
 let filaSeleccionadaId = null;
 let filaSeleccionada = null;
+const LIMITE_CARGA_INICIAL = 1500;
 
 const modalEntrega = document.getElementById('modalEntrega');
 const detalleEntrega = document.getElementById('detalleEntrega');
@@ -42,13 +43,16 @@ function cerrarModalEntrega() {
 }
 
 // Cargar datos desde backend (solo ordenes)
-async function cargarOrdenes() {
+async function cargarOrdenes({ busqueda = '', limite = LIMITE_CARGA_INICIAL } = {}) {
   try {
-    const res = await API_FETCH('/api/ordenes');
+    const parametros = new URLSearchParams();
+    if (busqueda.trim()) parametros.set('search', busqueda.trim());
+    if (!busqueda.trim()) parametros.set('limit', String(limite));
+
+    const res = await API_FETCH(`/api/ordenes?${parametros.toString()}`);
     let data = await res.json();
 
-    // Ordenar por id descendente y limitar a 1500
-    datos = data.sort((a, b) => b.id - a.id).slice(0, 3000);
+    datos = data.sort((a, b) => b.id - a.id);
 
     renderTabla(datos);
 
@@ -227,13 +231,28 @@ document.querySelectorAll("#tablaOrdenes th").forEach(th => {
 });
 
 // Buscador dinámico
-document.getElementById("buscador").addEventListener("input", e => {
+const buscador = document.getElementById("buscador");
+const buscarRegistros = document.getElementById("buscarRegistros");
+const refrescarRegistros = document.getElementById("refrescarRegistros");
+
+buscador.addEventListener("input", e => {
   const palabras = e.target.value.toLowerCase().split(" ").filter(p => p);
   const filtrados = datos.filter(row => {
     const campos = `${row.codigo || ""} ${row.nombre_declarado || ""} ${row.maquina_equipo || ""}`.toLowerCase();
     return palabras.every(p => campos.includes(p));
   });
   renderTabla(filtrados);
+});
+
+buscarRegistros.addEventListener("click", () => cargarOrdenes({ busqueda: buscador.value }));
+
+refrescarRegistros.addEventListener("click", () => {
+  buscador.value = '';
+  cargarOrdenes();
+});
+
+buscador.addEventListener("keydown", event => {
+  if (event.key === "Enter") cargarOrdenes({ busqueda: buscador.value });
 });
 
 document.getElementById('cancelarEntrega').addEventListener('click', cerrarModalEntrega);
