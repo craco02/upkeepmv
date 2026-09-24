@@ -117,7 +117,11 @@ function closeUserMenu() {
 function renderNav() {
   const token = localStorage.getItem('token');
   const username = localStorage.getItem('username');
+  const role = localStorage.getItem('role');
   if (token && username) {
+    const changePasswordItem = role !== 'viewer'
+      ? '<li role="none"><button type="button" id="changePasswordButton" class="nav-user-item" role="menuitem">Cambiar contrase\u00f1a</button></li>'
+      : '';
     navLogin.innerHTML = `
       <div class="nav-user-menu">
         <button type="button" class="nav-user-toggle" id="navUserToggle" aria-haspopup="true" aria-expanded="false">
@@ -125,7 +129,7 @@ function renderNav() {
         </button>
         <ul class="nav-user-dropdown" id="navUserDropdown" role="menu">
           <li role="none"><button type="button" id="logoutDiv" class="nav-user-item" role="menuitem">Cerrar sesi\u00f3n</button></li>
-          <li role="none"><button type="button" id="changePasswordButton" class="nav-user-item" role="menuitem">Cambiar contrase\u00f1a</button></li>
+          ${changePasswordItem}
         </ul>
       </div>
     `;
@@ -140,10 +144,13 @@ function renderNav() {
       localStorage.removeItem('token'); localStorage.removeItem('username'); localStorage.removeItem('role');
       form.reset(); window.location.reload();
     });
-    document.getElementById('changePasswordButton').addEventListener('click', () => {
-      closeUserMenu();
-      openPasswordModal();
-    });
+    const changePasswordButton = document.getElementById('changePasswordButton');
+    if (changePasswordButton) {
+      changePasswordButton.addEventListener('click', () => {
+        closeUserMenu();
+        openPasswordModal();
+      });
+    }
   } else {
     navLogin.innerHTML = '<div id="loginDiv" class="nav-btn">Login</div>';
     document.getElementById('loginDiv').addEventListener('click', () => {
