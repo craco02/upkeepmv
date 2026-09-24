@@ -9,10 +9,7 @@
       const token = localStorage.getItem("token");
       const headers = { "Accept": "application/json" };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const response = await fetch(url, {
-        credentials: "include",
-        headers
-      });
+      const response = await fetch(url, { headers });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
     },
