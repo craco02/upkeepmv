@@ -1,4 +1,6 @@
 (function () {
+  if (document.body && document.body.hasAttribute('data-no-global-layout')) return;
+
   const isPagesDir = window.location.pathname.includes('/pages/');
   const root = isPagesDir ? '../' : './';
 

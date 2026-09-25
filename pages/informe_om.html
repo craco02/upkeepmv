@@ -7,9 +7,17 @@
 <link rel="stylesheet" href="../css/informe_om.css">
 <script src="../js/api-config.js"></script>
 </head>
-<body>
+<body data-no-global-layout>
 
-  <!-- Barra superior: no se imprime -->
+  <div class="topbar no-print">
+    <span class="topbar-title">Informe técnico de mantenimiento</span>
+    <div class="topbar-actions">
+      <button type="button" id="btn-volver" class="btn btn-ghost">Volver a solicitudes</button>
+      <button type="button" id="btn-editar" class="btn btn-primary">Editar informe</button>
+      <button type="button" id="btn-imprimir" class="btn btn-primary">Imprimir / Guardar PDF</button>
+    </div>
+  </div>
+
   <!-- Panel de datos: no se imprime -->
   <aside class="panel no-print" id="panel">
     <div class="panel-head">
@@ -149,8 +157,5 @@
 
 
 
-<script src="../js/site-layout.js"></script>
-<script src="../js/login-modal.js"></script>
-<script src="../js/nav-responsive.js"></script>
 </body>
 </html>
