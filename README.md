@@ -1,121 +1,92 @@
-Portal de Mantenimiento - Metalúrgica Vera S.R.L.
-Descripción
+# Frontend - Portal de mantenimiento
 
-Este proyecto consiste en el desarrollo de un portal web orientado a la gestión y consulta de información del área de mantenimiento industrial de Metalúrgica Vera S.R.L.
+Este proyecto sigue siendo un proyecto académico, desarrollado para aplicar y consolidar conocimientos de frontend, arquitectura web y consumo de API en un contexto realista de mantenimiento industrial para Metalúrgica Vera S.A.E.
 
-La aplicación centraliza accesos a formularios, reportes, documentación técnica, paneles de control, solicitudes de mantenimiento y recursos de consulta utilizados por el personal de la empresa.
+Este directorio contiene la interfaz web del sistema de mantenimiento para Metalúrgica Vera S.A.E. La aplicación está construida como un frontend estático y consume la API REST del backend mediante JavaScript fetch.
 
-⚠️ Importante: Este sitio fue desarrollado con fines académicos como práctica de la materia Diseño Web Adaptativo (Responsive Web Design). Aunque el prototipo es completamente funcional y puede ser utilizado en un entorno real, su objetivo principal es demostrar la aplicación de conceptos de diseño adaptable, organización de contenido y experiencia de usuario en distintos dispositivos.
+## Objetivo
 
-Objetivos del Proyecto
-Aplicar principios de Diseño Web Adaptativo.
-Crear una interfaz intuitiva para el acceso a información de mantenimiento.
-Centralizar recursos y formularios utilizados por el personal técnico.
-Practicar la estructuración semántica de documentos HTML.
-Implementar componentes visuales adaptables a diferentes tamaños de pantalla.
-Características
-📋 Gestión de Solicitudes
-Creación de solicitudes de mantenimiento.
-Asignación de técnicos.
-Modificación de solicitudes.
-Cierre de órdenes de trabajo.
-Consulta de solicitudes registradas.
-Acceso a códigos de máquinas.
-📊 Informaciones y Reportes
-Integración con Power BI.
-Acceso a reportes de mantenimiento.
-Consulta de horómetros.
-Seguimiento de turnos de máquinas.
-Gestión de pedidos de logística.
-📑 Formularios Adicionales
-Registro de horómetros de equipos.
-Registro de compresores y generadores.
-Solicitudes de logística.
-Tickets de soporte informático.
-📚 Documentación Técnica
-Equipos de soldadura.
-Herramientas eléctricas.
-Puentes grúa.
-Materiales para matriculación de electricistas.
-🎥 Otros Proyectos
-Integración de contenido multimedia.
-Presentación de proyectos de ingeniería mediante simulaciones y videos.
-📞 Contacto
-Información de contacto del departamento.
-Correos electrónicos corporativos.
-Integración con WhatsApp.
-Ubicación mediante Google Maps.
-Tecnologías Utilizadas
-Frontend
-HTML5
-CSS3
-JavaScript
-Recursos Externos
-Font Awesome
-Microsoft Forms
-Microsoft SharePoint
-Power BI
-Google Maps
-Diseño Adaptativo
+Centralizar el acceso a:
+- solicitudes de mantenimiento
+- órdenes de trabajo
+- mantenimientos preventivos
+- reportes e indicadores
+- formularios de inventario y totales operativos
+- paneles y vistas de consulta del área industrial
 
-El proyecto fue desarrollado siguiendo principios de Responsive Web Design, permitiendo su utilización en:
+## Tecnologías
 
-Computadoras de escritorio.
-Notebooks.
-Tablets.
-Teléfonos móviles.
+- HTML5
+- CSS3
+- JavaScript vanilla
+- Fetch API
+- GitHub Pages para publicación estática
+- Font Awesome, assets internos y contenido institucional
 
-Entre las técnicas aplicadas se encuentran:
+## Arquitectura
 
-Uso de etiquetas semánticas HTML5.
-Organización modular de contenido.
-Diseño basado en contenedores flexibles.
-Navegación simplificada.
-Adaptación visual para distintos tamaños de pantalla.
-Estructura General
-/
+La estructura está pensada para funcionar como sitio público y de gestión, pero la información sensible y la lógica de negocio se mantienen en el backend.
+
+```text
+frontend/
 ├── index.html
 ├── css/
-│   ├── estilos.css
-│   └── footer-estilo.css
-├── js/
-│   └── modal-wa.js
+├── data/
 ├── img/
+├── js/
 ├── pages/
-│   ├── visor-pdf.html
-│   └── formulario-simple.html
-└── README.md
-Estado del Proyecto
+├── README.md
+├── .github/workflows/deploy-pages.yml
+└── ...
+```
 
-🟢 Prototipo Funcional
+## Flujo principal
 
-Publicación en GitHub Pages
+1. El navegador carga la página principal desde GitHub Pages.
+2. El script [js/api-config.js](js/api-config.js) centraliza la URL base de la API.
+3. La aplicación realiza llamadas a rutas bajo `/api/...` con JWT en el header cuando hay sesión activa.
+4. El backend valida autenticación, roles y permisos antes de ejecutar la operación.
 
-Este directorio está preparado para publicarse como la raíz del repositorio `craco02/upkeepmv` en:
+## Autenticación
 
-`https://craco02.github.io/upkeepmv/`
+La sesión no se guarda en el backend; se maneja por token JWT enviado desde el frontend y almacenado en localStorage.
 
-Al crear o actualizar el repositorio, copia el contenido de `frontend` directamente en su raíz. Deben quedar `index.html`, `css/`, `js/`, `pages/`, `img/`, `data/` y `.nojekyll` en ese nivel; no debe quedar una carpeta `frontend` intermedia.
+Los componentes principales del flujo de login están en:
+- [js/login-modal.js](js/login-modal.js)
+- [js/api-config.js](js/api-config.js)
 
-El workflow incluido en `.github/workflows/deploy-pages.yml` publica automáticamente cada push a `main`. En la configuración del repositorio, selecciona GitHub Actions como origen de Pages.
+## Publicación
 
-La aplicación continúa consumiendo la API configurada en `js/api-config.js`, actualmente `https://177.71.251.230`. El servidor de la API debe estar disponible por HTTPS y aceptar solicitudes desde GitHub Pages.
+El sitio puede publicarse como una app estática en GitHub Pages. El workflow de despliegue está en:
+- [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)
 
-Actualmente el proyecto se encuentra en estado funcional y operativo, permitiendo navegar entre las distintas secciones e interactuar con los recursos disponibles.
+La URL base configurada para las llamadas a la API es:
+- `https://177.71.251.230`
 
-Al tratarse de un proyecto académico, existen oportunidades de mejora futuras, tales como:
+Esto significa que, para que el frontend funcione en producción, el backend debe estar expuesto detrás de HTTPS y el proxy correcto (Nginx o equivalente).
 
-Migración a un framework moderno.
-Implementación de backend propio.
-Gestión de usuarios y autenticación.
-Base de datos para almacenamiento local.
-API para integración de servicios.
-Autor
+## Consideraciones
 
-Cristhian Redes
+- Este directorio no debería depender de una base de datos ni ejecutar lógica de negocio.
+- La UI debe ser responsabilidad del frontend; los permisos, validaciones y datos reales deben resolverse en el backend.
+- El contenido y ciertos textos institucionales deben mantenerse actualizados junto con el negocio.
 
-Proyecto desarrollado como práctica académica para la asignatura de Diseño Web Adaptativo, aplicando conceptos de diseño responsive, accesibilidad y organización de contenidos web en un entorno industrial.
+## Estado actual
 
-Licencia
+El frontend se encuentra en una etapa funcional con varias pantallas y módulos reunidos en una sola app estática, pero hay margen para:
+- consolidar una estructura más modular
+- reducir duplicación entre vistas
+- centralizar mejor variables de configuración por entorno
+- mejorar documentación técnica y mantenimiento del código
 
-Este proyecto tiene fines educativos y de demostración. Su uso, modificación o distribución deberá respetar las políticas y recursos utilizados por Metalúrgica Vera S.R.L. y los servicios externos integrados.
+## Mantenimiento
+
+Cuando se modifique la navegación, módulos o formularios, conviene revisar:
+- [index.html](index.html)
+- [pages/](pages/)
+- [js/](js/)
+- [css/](css/)
+
+## Autor
+
+Proyecto desarrollado para la operación y gestión interna de mantenimiento industrial.
