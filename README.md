@@ -61,9 +61,9 @@ El sitio puede publicarse como una app estática en GitHub Pages. El workflow de
 - [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)
 
 La URL base configurada para las llamadas a la API es:
-- `https://177.71.251.230`
+- `https://api.cracotech.com`
 
-Esto significa que, para que el frontend funcione en producción, el backend debe estar expuesto detrás de HTTPS y el proxy correcto (Nginx o equivalente).
+Esto significa que, para que el frontend funcione en producción, el backend debe estar expuesto detrás de HTTPS en el subdominio `api` y el proxy correcto (Nginx o equivalente) debe redirigir `/api` hacia el servidor de Node.js.
 
 ## Consideraciones
 

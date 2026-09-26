@@ -1,5 +1,5 @@
 /* Configuración centralizada de la API para el frontend */
-const API_BASE_URL = 'https://177.71.251.230';
+const API_BASE_URL = 'https://api.cracotech.com';
 
 const API_URL = (path) => {
   if (!path) return API_BASE_URL;
