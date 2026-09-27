@@ -57,13 +57,12 @@ Los componentes principales del flujo de login están en:
 
 ## Publicación
 
-El sitio puede publicarse como una app estática en GitHub Pages. El workflow de despliegue está en:
+El sitio se publica como una app estática en GitHub Pages. El workflow de despliegue está en:
 - [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)
 
-La URL base configurada para las llamadas a la API es:
-- `https://api.cracotech.com`
+GitHub Pages sirve el frontend estático en la URL asignada al repositorio, sin configurar un dominio personalizado. Las llamadas a la API siguen usando `https://api.cracotech.com`, configurada en [js/api-config.js](js/api-config.js). El backend debe permitir por CORS el origen de GitHub Pages donde se publique el frontend y estar expuesto detrás de HTTPS.
 
-Esto significa que, para que el frontend funcione en producción, el backend debe estar expuesto detrás de HTTPS en el subdominio `api` y el proxy correcto (Nginx o equivalente) debe redirigir `/api` hacia el servidor de Node.js.
+Los enlaces a archivos internos son relativos para que funcionen tanto en un dominio `github.io` como en la subruta de un repositorio.
 
 ## Consideraciones
 
